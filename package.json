@@ -1,0 +1,34 @@
+{
+  "name": "fs-relational-databases",
+  "version": "1.0.0",
+  "description": "Full stack helsinki part 12",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "TESTING=true node --test --test-concurrency=1 tests/api_ch3.test.js",
+    "start:test": "TESTING=true node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/XxCharlyRuzxX/fs-relational-databases.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/XxCharlyRuzxX/fs-relational-databases/issues"
+  },
+  "homepage": "https://github.com/XxCharlyRuzxX/fs-relational-databases#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  },
+  "dependencies": {
+    "axios": "^1.21.1",
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.23.1",
+    "sequelize": "^6.37.8"
+  }
+}
