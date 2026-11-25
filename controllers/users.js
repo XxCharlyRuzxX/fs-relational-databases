@@ -1,12 +1,13 @@
 const router = require('express').Router()
 
-const { User, Blog } = require('../models')
+const { User, Blog, ReadingList } = require('../models')
 const { errorHandler } = require('../utils/middleware')
 
 router.get('/', async (req, res) => {
   const users = await User.findAll({
     include: {
       model: Blog,
+      as: 'blogs',
       attributes: {
         exclude: ['userId']
       }
@@ -48,9 +49,38 @@ router.put('/:username', async (req, res, next) => {
 })
 
 router.get('/:id', async (req, res) => {
-  const user = await User.findByPk(req.params.id)
+  const read = req.query.read
+  if (read !== undefined && read !== 'true' && read !== 'false') {
+    return res.status(400).json({ error: 'read must be true or false' })
+  }
+
+  const readingListInclude = {
+    model: ReadingList,
+    as: 'readingListEntries',
+    attributes: ['id', 'read'],
+    required: false,
+    include: {
+      model: Blog,
+      as: 'blog',
+      attributes: ['id', 'url', 'title', 'author', 'likes', 'year']
+    }
+  }
+
+  if (read !== undefined) {
+    readingListInclude.where = { read: read === 'true' }
+  }
+
+  const user = await User.findByPk(req.params.id, {
+    include: readingListInclude
+  })
   if (user) {
-    res.json(user)
+    const userData = user.toJSON()
+    userData.readings = userData.readingListEntries.map(({ id, read, blog }) => ({
+      ...blog,
+      readingList: { id, read }
+    }))
+    delete userData.readingListEntries
+    res.json(userData)
   } else {
     res.status(404).end()
   }
